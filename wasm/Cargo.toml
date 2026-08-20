@@ -1,0 +1,21 @@
+[package]
+name = "vkv-neo-wasm"
+version = "1.0.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "vkv-neo WASM engine. Powered By Vexify."
+
+[lib]
+name = "vkv_neo_wasm"
+crate-type = ["cdylib"]
+path = "src/lib.rs"
+
+[dependencies]
+vkv-core = { path = "../core" }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"

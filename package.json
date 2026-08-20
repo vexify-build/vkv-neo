@@ -1,0 +1,58 @@
+{
+  "name": "vkv-neo",
+  "version": "1.0.0",
+  "description": "超高速多引擎 Key-Value Store · 三引擎 JS / WASM / Rust (N-API) · 三存储 RAM / Disk(WAL) / Hybrid(快照) · bulk 100W+ ops/s · Powered By Vexify",
+  "license": "Apache-2.0",
+  "main": "src/index.js",
+  "bin": {
+    "vkv": "bin/vkv.js",
+    "vkv-neo": "bin/vkv.js"
+  },
+  "files": [
+    "src",
+    "bin",
+    "native",
+    "scripts",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "npm run build:wasm && npm run build:native",
+    "build:wasm": "bash scripts/build-wasm.sh",
+    "build:native": "bash scripts/build-native.sh",
+    "test": "node --test",
+    "bench": "node scripts/bench.js"
+  },
+  "keywords": [
+    "kv",
+    "key-value",
+    "key-value-store",
+    "wasm",
+    "webassembly",
+    "napi",
+    "node-api",
+    "native",
+    "rust",
+    "high-performance",
+    "in-memory",
+    "persistence",
+    "wal",
+    "snapshot",
+    "hybrid",
+    "disk",
+    "storage",
+    "vexify"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "yargs": "^17.7.2"
+  },
+  "poweredBy": "Vexify",
+  "author": "Vexify",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vexify/vkv-neo.git"
+  }
+}
