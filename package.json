@@ -20,7 +20,10 @@
     "build": "npm run build:wasm && npm run build:native",
     "build:wasm": "bash scripts/build-wasm.sh",
     "build:native": "bash scripts/build-native.sh",
+    "build:check": "node --check src/index.js && node --check bin/vkv.js && node scripts/bench.js --count 1000 --json",
     "test": "node --test",
+    "test:ci": "npm test",
+    "ci": "npm run test:ci",
     "bench": "node scripts/bench.js"
   },
   "keywords": [
