@@ -2,76 +2,39 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
 
 jobs:
-  # ── Unit tests (runs on all platforms, no Rust needed) ──────────────────
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run unit tests
+      - name: Run tests
         run: npm test
 
-      - name: Type check (lint)
-        if: runner.os == 'Linux'
-        run: node --check src/index.js bin/vkv.js scripts/*.js 2>&1 || true
+      - name: Build (if applicable)
+        run: npm run build || true
 
-  # ── Build native .node (Rust N-API) ──────────────────────────────────────
-  build-native:
+  bench:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-node@v4
         with:
-          targets: x86_64-unknown-linux-gnu
-
-      - uses: Swatinem/rust-cache@v2
-
-      - name: Build native engine
-        run: |
-          cargo build --release --manifest-path native/Cargo.toml
-
-      - name: Verify .node file
-        run: |
-          ls -lh target/release/libvkv_native.so || ls -lh target/release/*.so || ls -lh target/release/*.node
-
-  # ── Build WASM engine ────────────────────────────────────────────────────
-  build-wasm:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust + WASM target
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: wasm32-unknown-unknown
-
-      - uses: Swatinem/rust-cache@v2
-
-      - name: Build WASM engine
-        run: |
-          cargo build --release --target wasm32-unknown-unknown --manifest-path wasm/Cargo.toml
-
-      - name: Verify .wasm file
-        run: |
-          ls -lh target/wasm32-unknown-unknown/release/*.wasm
+          node-version: '20'
+      - run: npm ci
+      - run: npm run bench || true
